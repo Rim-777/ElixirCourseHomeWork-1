@@ -57,8 +57,8 @@ defmodule Calculator do
 
   @impl GenServer
   def handle_call({:add, num_1, num_2}, _from, _state) do
-    new_satate = num_1 + num_2
-    {:reply, new_satate, new_satate}
+    new_state = num_1 + num_2
+    {:reply, new_state, new_state}
   end
 
   @impl GenServer
