@@ -1,6 +1,8 @@
 defmodule Calculator do
   use GenServer
 
+  @acceptable_opperations [:add, :subtract, :multiply, :divide]
+
   @moduledoc """
   Documentation for `Calculator`.
   """
@@ -23,12 +25,30 @@ defmodule Calculator do
     {:ok, 0}
   end
 
-  def call(operation, num_1, num_2) do
+  def call(:divide, _num_1, 0) do
+    :unproccessable
+  end
+
+  def call(operation, num_1, num_2)
+      when operation in @acceptable_opperations and is_number(num_1) and is_number(num_2) do
     GenServer.call(__MODULE__, {operation, num_1, num_2})
   end
 
-  def call(operation, num) do
+  def call(_operation, _num_1, _num_2) do
+    :unproccessable
+  end
+
+  def call(:divide, 0) do
+    :unproccessable
+  end
+
+  def call(operation, num)
+      when operation in @acceptable_opperations and is_number(num) do
     GenServer.call(__MODULE__, {operation, num})
+  end
+
+  def call(_operation, _num) do
+    :unproccessable
   end
 
   def call(:reset) do
@@ -71,16 +91,6 @@ defmodule Calculator do
     {:reply, new_state, new_state}
   end
 
-  @impl GenServer
-  def handle_call({:divide, _num, 0}, _from, state) do
-    unproccessable_operation(state)
-  end
-
-  @impl GenServer
-  def handle_call({:divide, 0}, _from, state) do
-    unproccessable_operation(state)
-  end
-
   def handle_call({:divide, num_1, num_2}, _from, _state) do
     new_state = num_1 / num_2
     {:reply, new_state, new_state}
@@ -95,9 +105,5 @@ defmodule Calculator do
   @impl GenServer
   def handle_call(:reset, _from, _state) do
     {:reply, 0, 0}
-  end
-
-  defp unproccessable_operation(state) do
-    {:reply, :unproccessable, state}
   end
 end

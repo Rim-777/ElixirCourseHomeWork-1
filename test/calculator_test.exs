@@ -3,7 +3,7 @@ defmodule CalculatorTest do
   alias Calculator
   doctest Calculator
 
-  test ~c"calculates numbers" do
+  test "calculates numbers" do
     Calculator.start_link()
 
     assert Calculator.call(:add, 2, 3) == 5
@@ -19,5 +19,10 @@ defmodule CalculatorTest do
     assert Calculator.call(:divide, 2) == 3
     assert Calculator.call(:reset) == 0
     assert Calculator.call(:add, 7) == 7
+    assert Calculator.call(:ufo, 7) == :unproccessable
+    assert Calculator.call(:ufo, 7, 7) == :unproccessable
+    assert Calculator.call(:add, :ufo) == :unproccessable
+    assert Calculator.call(:add, 7, :ufo) == :unproccessable
+    assert Calculator.call(:add, :ufo, 7) == :unproccessable
   end
 end
